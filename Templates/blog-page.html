@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title>Blog-It</title>
+  </head>
+  <style type="text/css">
+    body {
+      font-family: sans-serif;
+      width: 800px;
+      margin: 0 auto;
+      padding: 10px;
+    }
+    a {
+      padding: 10px;
+    }
+    hr {
+      font-family: sans-serif;
+      margin: 20px auto;
+    }
+  </style>
+  <body>
+    <a href="/blog"><h1>Blog-It</h1></a>
+    <form>
+      <a href="/newpost">Add New Blog</a>
+      <a href="/blog">Refresh</a>
+      <label>Id Search</label><input type="text" name="idsearch">
+
+    </form>
+    <hr>
+
+    {% for blog in blogs %}
+      <div class="blog">
+        <div class="blog-title">{{blog.title}}</div>
+        <pre class="blog-body">{{blog.blog}}</pre>
+      </div>
+    {% endfor %}
+
+  </body>
+</html>
