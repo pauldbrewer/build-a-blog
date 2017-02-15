@@ -17,6 +17,7 @@
 import os
 import webapp2
 import jinja2
+import time
 
 from google.appengine.ext import db
 
@@ -40,9 +41,17 @@ class Blog(db.Model):
     blog = db.TextProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
 
+class BlogPage(Handler):
+    def render_blog(self, title="", blog=""):
+        blogs = db.GqlQuery("SELECT * FROM Blog ORDER BY created DESC LIMIT 5")
+        self.render("blog-page.html", title=title, blog=blog, blogs=blogs)
+
+    def get(self):
+        self.render_blog()
+
 class NewBlogPage(Handler):
     def render_front(self, title="", blog="", error=""):
-        blogs = db.GqlQuery("SELECT * FROM Blog ORDER BY created DESC ")
+        blogs = db.GqlQuery("SELECT * FROM Blog ORDER BY created DESC")
         self.render("new-blog-page.html", title=title, blog=blog, error=error)
 
     def get(self):
@@ -55,21 +64,22 @@ class NewBlogPage(Handler):
         if title and blog:
             b = Blog(title = title, blog = blog)
             b.put()
-            self.redirect("/blog")
+            time.sleep(1)
+            post = b
+            self.render("look-up.html", post=post)
         else:
             error = "We need both a title and a blog"
             self.render_front(title, blog, error)
 
-class BlogPage(Handler):
-    def render_blog(self, title="", blog="",):
-        blogs = db.GqlQuery("SELECT * FROM Blog ORDER BY created DESC LIMIT 5")
-        self.render("blog-page.html", title=title, blog=blog, blogs=blogs)
+class ViewPostHandler(Handler):
+    def get(self, id):
 
-    def get(self):
-        self.render_blog()
+        post = Blog.get_by_id(int(id))
+
+        self.render("look-up.html", post=post)
 
 app = webapp2.WSGIApplication([
-    ('/', ),
     ('/newpost', NewBlogPage),
-    ('/blog', BlogPage)
+    ('/', BlogPage),
+    webapp2.Route('/blog/<id:\d+>', ViewPostHandler)
 ], debug=True)

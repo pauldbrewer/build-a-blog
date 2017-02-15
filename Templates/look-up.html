@@ -21,20 +21,15 @@
   </style>
   <body>
     <a href="/"><h1>Blog-It</h1></a>
-    <form>
-      <a href="/newpost">Add New Blog</a>
-      <a href="/">Refresh</a>
-      
 
-    </form>
     <hr>
 
-    {% for blog in blogs %}
+
       <div class="blog">
-        <a href="/blog/{{blog.key().id()}}"><div class="blog-title">{{blog.title}}</div></a>
-        <pre class="blog-body">{{blog.blog}}</pre>
+        <div class="blog-title">{{post.title}}</div>
+        <pre class="blog-body">{{post.blog}}</pre>
       </div>
-    {% endfor %}
+
 
   </body>
 </html>
